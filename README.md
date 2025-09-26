@@ -16,37 +16,41 @@ in[0]->Value() // ->[rip+0xcafe]
 
 #### example
 ```c++
-#include <stdio.h>
+#include <linux/types.h>
 #include <x86disass/disass.hpp>
-
-#define p(s,...) printf(s, __VA_ARGS__);
 
 int main() {
 	auto d = Disass();
-	d.iter(main, 0x10, [](__u64 i, insn_t& in) {
+	d.iter(main, 0x50, [](__u64 i, insn_t& in) {
 		if (in.IsNull()) return;
-		p("%s\n", in.Mnemo());
-
-		for (int i = 0; i < in.OperCount(); i++) {
-			auto op = in[i];
-			p("Operand [%i] - %s\n", i, in[i]->Str());
-
-			switch (in[i]->Type()) {
-				case OperType::REG: p("%s\n", op->Reg().name());		break;
-				case OperType::IMM: p("Immediate %lx\n", op->Value());	break;
-				case OperType::FXD: p("Fixed %lx\n", op->Value());		break;
-				case OperType::PTR:
-					if (!!in.Sib()) {
-						p("[%i * %s + %s + %lx]\n", op->Scale(), op->IndexReg(), op->BaseReg(), op->Value());
-					} else if (op->IsRIP()) {
-						p("[%s + %lx ]\n", in[i]->IsRIP() == 32 ? "EIP" : "RIP", in[i]->Value());
-					}
-			}
-		}
-		puts("\n");
+		in.Print();
 	});
 	return 0;
 }
+```
+###### output
+```
+55                            PUSH    RBP
+48 89 e5                      MOV     RBP, RSP
+53                            PUSH    RBX
+48 83 ec 28                   SUB     RSP, 0x28
+66 0f ef c0                   PXOR    MMX0, MMX0
+0f 29 45 d0                   MOVAPS  XMM ptr [RBP-0x30], XMM0
+66 0f d6 45 e0                MOVQ    QWORD ptr [RBP-0x20], XMM0
+48 8d 45 d0                   LEA     RAX, QWORD ptr [RBP-0x30]
+48 89 c7                      MOV     RDI, RAX
+e8 1f 02 00 00                CALL    [RIP+0x21f]
+48 8d 45 d0                   LEA     RAX, QWORD ptr [RBP-0x30]
+ba 50 00 00 00                MOV     EDX, 0x50
+48 8d 0d ce ff ff ff          LEA     RCX, QWORD ptr [RIP-0x32]
+48 89 ce                      MOV     RSI, RCX
+48 89 c7                      MOV     RDI, RAX
+e8 36 00 00 00                CALL    [RIP+0x36]
+bb 00 00 00 00                MOV     EBX, 0x0
+48 8d 45 d0                   LEA     RAX, QWORD ptr [RBP-0x30]
+48 89 c7                      MOV     RDI, RAX
+e8 0f 02 00 00                CALL    [RIP+0x20f]
+89 d8                         MOV     EAX, EBX
 ```
 
 view pybind11 bindings for this project - [here](https://github.com/HeX0Rci5T/x86_pybindings)
