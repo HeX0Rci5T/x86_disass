@@ -7,7 +7,7 @@ Originally written in C, later on, a C++ API has been introduced. (see at [cpp_u
 ```c++
 insn_t in("\xe9\xad\xde\x00\x00");
 uint64_t dest = in.PtrAddr(0x55555555050);
-// [rip+0xdead] 	-> 0x55555555050+0xdead+<instruction size>
+// [rip+0xdead]   -> 0x55555555050+0xdead+<instruction size>
 // [rax]          -> -1
 in.stick_ptr(0xcafe, ReAsmT::FXD);
 in[0]->Value() // ->[rip+0xcafe]
