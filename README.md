@@ -1,6 +1,5 @@
 # x86_disass
-A Disassembler for x86_64 architecture, supporting instruction rewriting, wrote with C&amp;C++
-
+A Disassembler for x86_64 architecture, supporting instruction rewriting, wrote in C&amp;C++
 Originally written in C, later on, a C++ API has been introduced. (see at [cpp_uapi.hpp](https://github.com/HeX0Rci5T/x86_disass/blob/main/uapi/cpp_uapi.hpp))
 
 ---
@@ -14,21 +13,7 @@ in[0]->Value() // ->[rip+0xcafe]
 ```
 ---
 
-#### example
-```c++
-#include <linux/types.h>
-#include <x86disass/disass.hpp>
-
-int main() {
-	auto d = Disass();
-	d.iter(main, 0x50, [](__u64 i, insn_t& in) {
-		if (in.IsNull()) return;
-		in.Print();
-	});
-	return 0;
-}
-```
-###### output
+###### sample output
 ```
 55                            PUSH    RBP
 48 89 e5                      MOV     RBP, RSP
